@@ -8,7 +8,7 @@ import { Monoid, concatAll } from 'fp-ts/lib/Monoid'
 
 export const parse = flow(S.lines)
 
-const matchingNumbers: NEA.NonEmptyArray<[string, string]> = [
+const matchingNumbers = [
   ['1', '1'],
   ['2', '2'],
   ['3', '3'],
@@ -20,7 +20,7 @@ const matchingNumbers: NEA.NonEmptyArray<[string, string]> = [
   ['9', '9']
 ]
 
-const matchingCountingWords: NEA.NonEmptyArray<[string, string]> = [
+const matchingCountingWords = [
   ['1', 'one'],
   ['2', 'two'],
   ['3', 'three'],
@@ -42,6 +42,7 @@ const compareSnd = (
 
 export const minSnd = compareSnd(Math.min, Infinity)
 export const maxSnd = compareSnd(Math.max, -Infinity)
+
 export const findFirstIndex = (line: string, search: string) =>
   line.indexOf(search) < 0 ? Infinity : line.indexOf(search)
 export const findLastIndex = (line: string, search: string) =>
@@ -75,9 +76,9 @@ const solve = (needles: NEA.NonEmptyArray<[string, string]>) =>
   )
 
 export function partOne(input: ReturnType<typeof parse>) {
-  return solve(matchingNumbers)(input)
+  return solve(matchingNumbers as  NEA.NonEmptyArray<[string, string]>)(input)
 }
 
 export function partTwo(input: ReturnType<typeof parse>) {
-  return solve(matchingNumbers.concat(matchingCountingWords))(input)
+  return solve(matchingNumbers.concat(matchingCountingWords) as  NEA.NonEmptyArray<[string, string]>)(input)
 }
