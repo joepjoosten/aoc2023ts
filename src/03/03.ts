@@ -67,14 +67,14 @@ function adjecents(position: number, width: number) {
 }
 
 export function partOne(input: ReturnType<typeof parse>) {
-  const [parts, symbols, width, height] = input;
+  const [parts, symbols, width] = input;
   const inspectPostitions = symbols.flatMap(({ position }) => adjecents(position, width));
   const adjecentParts = parts.filter(({ positions }) => positions.some(position => inspectPostitions.includes(position)));
   return adjecentParts.reduce((a, b) => a + b.partNumber, 0);
 }
 
 export function partTwo(input: ReturnType<typeof parse>) {
-  const [parts, symbols, width, height] = input;
+  const [parts, symbols, width] = input;
   const gearRations = symbols.filter(({symbol}) => symbol === '*').flatMap(({ position }) => {
     const adjecent = adjecents(position, width);
     const filteredParts = parts.filter(({ positions }) => positions.some(position => adjecent.includes(position)));
