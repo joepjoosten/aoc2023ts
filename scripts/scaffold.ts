@@ -17,19 +17,33 @@ export async function scaffold(day: number, year: number) {
   await mkdir(directory)
 
   const test = dedent`
-  import { describe } from 'bun:test'
+  import { describe, expect, it } from 'bun:test'
+  import { parse, partOne, partTwo } from './${name}'
+
+  const { default: example } = await import(\`@/${name}/example.txt\`)
 
   describe(${`'Day ${day}'`}, () => {
-    describe('Part One', () => {})
+    describe('Part One', () => {
+      it('should pass the test input from day ${day} part 1', () => {
+        expect(partOne(parse(example))).toBe(undefined)
+      });
+    })
     
-    describe('Part Two', () => {})
+    describe('Part Two', () => {
+      it('should pass the test input from day ${day} part 2', () => {
+        expect(partTwo(parse(example))).toBe(undefined)
+      });
+    })
   })
   `
 
   const solution = dedent`
-  export function parse(input: string) {
-    return input
-  }
+  const parser = 
+    pipe(
+  
+    );
+
+  export const parse = (input: string) => parseInput(parser)(input);  
   
   export function partOne(input: ReturnType<typeof parse>) {}
 

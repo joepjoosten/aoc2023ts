@@ -1,6 +1,8 @@
 type Parts = Array<{ partNumber: number; positions: number[] }>
 type Symbols = Array<{ symbol: string; position: number }>
 
+
+
 export function parse(input: string) {
   let width = 0;
   let height = 0;
