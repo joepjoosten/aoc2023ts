@@ -4,12 +4,27 @@ import { Parser, sepBy } from 'parser-ts/lib/Parser'
 import { run } from 'parser-ts/lib/code-frame'
 import { string } from 'parser-ts/lib/string'
 
-export const parseInput =
+export const parseLineInput =
   <T>(entryParser: Parser<string, T>, seperator = string('\n')) =>
   (input: string): T[] =>
     pipe(
       run(pipe(sepBy(seperator, entryParser)), input),
       fold(() => {
         throw new Error('Parse error')
-      }, identity),
+      }, identity)
     )
+
+export const parseInput =
+  <T>(parser: Parser<string, T>) =>
+  (input: string): T =>
+    pipe(
+      run(parser, input),
+      fold((e) => {
+        throw new Error(`Parse error: ${e}`)
+      }, identity)
+    )
+
+export const log = <A>(prefix: string) => (a: A): A => {
+  console.log(prefix, a);
+  return a;
+};

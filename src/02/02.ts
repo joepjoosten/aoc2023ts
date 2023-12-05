@@ -5,7 +5,7 @@ import * as R from "fp-ts/Record";
 import { many1, lower } from "parser-ts/char";
 import { spaces1, string, int,  } from "parser-ts/string";
 import { chain, Parser, bindTo, bind, sepBy } from "parser-ts/Parser";
-import { parseInput } from "@/utils";
+import { parseLineInput } from "@/utils";
 
 type Cube = { count: number, color: string };
 type Cubes = Array<Cube>;
@@ -17,7 +17,7 @@ const cubes = pipe(sepBy(string(','), cube));
 const set = pipe(sepBy(string(';'), cubes));
 const game: Parser<string, Game> = pipe(gameNumber, bindTo('game'), bind('sets', () => pipe(string(':'), chain(() => set))));
 
-export const parse = parseInput(game)
+export const parse = parseLineInput(game)
 
 const maxCountPerCube = (cubes: Cubes) => cubes.reduce((acc, { count, color }) => ({...acc, [color]: Math.max(acc[color] ?? 0, count)}), {} as Record<string, number>)
 

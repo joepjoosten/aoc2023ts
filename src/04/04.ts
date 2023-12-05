@@ -1,4 +1,4 @@
-import { parseInput } from '@/utils';
+import { parseLineInput } from '@/utils';
 import { pipe } from 'fp-ts/function';
 import { chain, manyTill, bind, bindTo, Parser, takeUntil, many } from "parser-ts/Parser";
 import { char } from 'parser-ts/lib/char';
@@ -17,7 +17,7 @@ const cardParser =
     bind('chosen', () => many(num))
   );
 
-export const parse = (input: string) => parseInput(cardParser)(input);
+export const parse = (input: string) => parseLineInput(cardParser)(input);
 
 export function partOne(input: ReturnType<typeof parse>) {
   return pipe(
