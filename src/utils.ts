@@ -28,3 +28,8 @@ export const log = <A>(prefix: string) => (a: A): A => {
   console.log(prefix, a);
   return a;
 };
+
+export const tap = <A>(f: (a: A) => void) => (a: A): A => {
+  f(a);
+  return a;
+}

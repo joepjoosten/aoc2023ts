@@ -1,5 +1,5 @@
-import { parseInput, log } from "@/utils";
-import { pipe } from "fp-ts/lib/function";
+import { parseInput, log, tap } from "@/utils";
+import { flow, pipe } from "fp-ts/lib/function";
 import { many1, notSpace, oneOf, unicodeLetter } from "parser-ts/lib/char";
 import { bindTo, bind, chain, manyTill, sepBy, Parser, many } from "parser-ts/lib/Parser";
 import { int, spaces1, string } from "parser-ts/lib/string";
@@ -36,40 +36,47 @@ export function partOne({ seeds, maps }: ReturnType<typeof parse>) {
   )
 }
 
-const mapDiffes = (seed: Diff, diffs: Diff[]): Diff[] => {
-  const filtered = diffs.filter(({ start, end }) => seed.end >= start || seed.start <= end);
-  return filtered.length === 0 ? [seed] : filtered.flatMap(({ start, end, diff }) => {
-    const result: Diff[] = [];
-    if(seed.start < start) result.push({start: seed.start, end: start - 1, diff: seed.diff});
-    result.push({start: Math.max(seed.start + diff, start + diff), end: Math.min(seed.end + diff, end + diff), diff: seed.diff + diff});
-    if(seed.end > end) result.push({start: end, end: seed.end, diff: seed.diff});
-    return result;
-  });
+const applyMappings = (mappers: Mapping[]) => (seed: Seed): Seed[] => {
+  return pipe(
+    mappers,
+    A.sort(sortByStart),
+    A.filter(({ start, end }) => (start >= seed.start && start <= seed.end) || (end >= seed.start && end <= seed.end)),
+    (m) => {
+      
+    }
+  ) ?? [seed];
 }
 
-type Diff = { start: number; end: number; diff: number };
+const sortByStart = ord.contramap((x: { start: number; }) => x.start)(N.Ord);
+type Seed = { start: number; end: number; };
+type Mapping = Seed & { diff: number };
 
 export function partTwo({ seeds, maps }: ReturnType<typeof parse>) {
-  const diffs = pipe(
+  const mappers = pipe(
     maps,
-    A.map(A.map(({ src, len, dest }) => ({start: src, end: src + len - 1, diff: dest - src} as Diff))),
+    A.map(
+      flow(
+        A.map(({ src, len, dest }) => ({start: src, end: src + len - 1, diff: dest - src} as Mapping)),
+        log('mappings')
+      )
+    ),
   );
-  const seedDiffs = pipe(
+  const seedM = pipe(
     Array.from(seeds),
     A.chunksOf(2),
-    A.map(([a, b]) => ({start: a, end: a + (b ?? 0) - 1, diff: 0} as Diff)),
+    A.map(([a, b]) => ({start: a, end: a + (b ?? 0) - 1} as Seed)),
   )
 
-  const mappers = pipe(
-    diffs,
-    A.map((diff) => pipe(
-      seedDiffs,
-      A.flatMap((seed) => mapDiffes(seed, diff)),
-      log('seedDiffs'),
-      A.reduce(diff, (acc, seed) => mapDiffes(seed, acc)),
-    ))
+  return pipe(
+    mappers,
+    A.reduce(seedM, (acc, mappings) => pipe(
+      acc,
+      tap((seeds) => A.seed),
+      A.map(applyMappings(mappings)), 
+      log('acc'),
+      A.flatten
+    )),
+    A.map(({start}) => start),
+    A.reduce(Infinity, (a, b) => Math.min(a, b))
   );
-
-  //console.log(JSON.stringify(mappers, null, 2))
-  return false;
 }
