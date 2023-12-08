@@ -1,10 +1,10 @@
 import * as S from 'fp-ts-std/string'
 import * as NEA from 'fp-ts/NonEmptyArray'
 import * as RNEA from 'fp-ts/ReadonlyNonEmptyArray'
-import * as N from 'fp-ts/number'
 import * as T from 'fp-ts/Tuple'
-import { flow, pipe } from 'fp-ts/lib/function'
 import { Monoid, concatAll } from 'fp-ts/lib/Monoid'
+import { flow, pipe } from 'fp-ts/lib/function'
+import * as N from 'fp-ts/number'
 
 export const parse = flow(S.lines)
 

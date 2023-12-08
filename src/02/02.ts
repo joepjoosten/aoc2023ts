@@ -1,11 +1,11 @@
-import { flow, pipe } from "fp-ts/function"
-import * as RA from "fp-ts/ReadonlyArray";
-import * as A from "fp-ts/Array";
-import * as R from "fp-ts/Record";
-import { many1, lower } from "parser-ts/char";
-import { spaces1, string, int,  } from "parser-ts/string";
-import { chain, Parser, bindTo, bind, sepBy } from "parser-ts/Parser";
 import { parseLineInput } from "@/utils";
+import * as A from "fp-ts/Array";
+import * as RA from "fp-ts/ReadonlyArray";
+import * as R from "fp-ts/Record";
+import { flow, pipe } from "fp-ts/function";
+import { Parser, bind, bindTo, chain, sepBy } from "parser-ts/Parser";
+import { lower, many1 } from "parser-ts/char";
+import { int, spaces1, string, } from "parser-ts/string";
 
 type Cube = { count: number, color: string };
 type Cubes = Array<Cube>;

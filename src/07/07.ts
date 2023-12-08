@@ -1,13 +1,13 @@
-import { tap, parseLineInput } from "@/utils";
-import { pipe, identity} from "fp-ts/lib/function";
-import { bindTo, bind, chain } from "parser-ts/lib/Parser";
-import { notSpace } from "parser-ts/lib/char";
-import { int, spaces1 } from "parser-ts/lib/string";
+import { parseLineInput, tap } from "@/utils";
 import * as A from 'fp-ts/lib/Array';
 import * as NEA from 'fp-ts/lib/NonEmptyArray';
+import { Ord, contramap, fromCompare } from "fp-ts/lib/Ord";
 import * as R from 'fp-ts/lib/Record';
+import { identity, pipe } from "fp-ts/lib/function";
 import * as N from 'fp-ts/lib/number';
-import { Ord, fromCompare, getMonoid, contramap } from "fp-ts/lib/Ord";
+import { bind, bindTo, chain } from "parser-ts/lib/Parser";
+import { notSpace } from "parser-ts/lib/char";
+import { int, spaces1 } from "parser-ts/lib/string";
 
 
 const num = pipe(spaces1, chain(() => int));
@@ -48,11 +48,11 @@ enum HandType {
   ThreeOfAKind = 3,
   FullHouse = 4,
   FourOfAKind = 5,
-  StraightFlush = 6,
+  FiveOfAKind = 6,
 }
 
 const determineHandType = (jokers: boolean) => (hand: Hand): HandType => {
-  let handType: HandType = HandType.StraightFlush;
+  let handType: HandType = HandType.FiveOfAKind;
   switch (hand.grouped.length) {
     case 5:
       handType = HandType.HighCard;
@@ -67,23 +67,24 @@ const determineHandType = (jokers: boolean) => (hand: Hand): HandType => {
       handType = hand.grouped[0]![1] === 4 || hand.grouped[0]![1] === 1 ? HandType.FourOfAKind : HandType.FullHouse;
       break;
     default:
-      handType = HandType.StraightFlush;
+      handType = HandType.FiveOfAKind;
   }
   
   if(jokers && hand.jokers > 0) {
     switch(hand.jokers) {
       case 5:
       case 4:
-        return HandType.StraightFlush;
+        return HandType.FiveOfAKind;
       case 3:
-        if (handType === HandType.FullHouse) return HandType.StraightFlush;
+        if (handType === HandType.FullHouse) return HandType.FiveOfAKind;
         else return HandType.FourOfAKind;
       case 2:
-        if (handType === HandType.ThreeOfAKind) return HandType.StraightFlush;
+        if (handType === HandType.FullHouse) return HandType.FiveOfAKind;
+        if (handType === HandType.ThreeOfAKind) return HandType.FiveOfAKind;
         if (handType === HandType.TwoPair) return HandType.FourOfAKind;
         if (handType === HandType.Pair) return HandType.ThreeOfAKind;
       case 1:
-        if(handType === HandType.FourOfAKind) return HandType.StraightFlush;
+        if(handType === HandType.FourOfAKind) return HandType.FiveOfAKind;
         if(handType === HandType.ThreeOfAKind) return HandType.FourOfAKind;
         if(handType === HandType.TwoPair) return HandType.FullHouse;
         if(handType === HandType.Pair) return HandType.ThreeOfAKind;

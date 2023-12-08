@@ -1,10 +1,9 @@
 import { parseLineInput } from '@/utils';
-import { pipe } from 'fp-ts/function';
-import { chain, manyTill, bind, bindTo, Parser, takeUntil, many } from "parser-ts/Parser";
-import { char } from 'parser-ts/lib/char';
-import { int, string, spaces, spaces1 } from 'parser-ts/string';
 import * as A from 'fp-ts/Array';
+import { pipe } from 'fp-ts/function';
 import { none, some } from 'fp-ts/lib/Option';
+import { bind, bindTo, chain, many, manyTill } from "parser-ts/Parser";
+import { int, spaces, spaces1, string } from 'parser-ts/string';
 
 const cardNumber = pipe(string("Card"), chain(() => spaces), chain(() => int));
 const num = pipe(spaces1, chain(() => int));
