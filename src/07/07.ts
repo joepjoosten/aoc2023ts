@@ -116,7 +116,6 @@ export function partTwo(input: ReturnType<typeof parse>) {
   return pipe(
     input,
     A.sortBy([compareHandType(true), compareHighCard(jokerRank)]),
-    A.map(tap((hand) => console.log(`${hand.cards.join('')} ${determineHandType(true)(hand)}`))),
     A.mapWithIndex((i, x) => ((i+1) * x.bid)),
     A.reduce(0, (a, b) => a + b)
   )
