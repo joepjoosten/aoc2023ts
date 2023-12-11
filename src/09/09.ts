@@ -5,25 +5,18 @@ import { int, string } from 'parser-ts/lib/string'
 import { aperture } from 'fp-ts-std/Array'
 import * as A from 'fp-ts/lib/Array'
 
-const negativeNumber = pipe(
-  string('-'),
-  chain(() => int),
-  map(n => -n)
-)
-const positiveOrNegative = pipe(
-  int,
-  alt(() => negativeNumber)
-)
+const negativeNumber = pipe(string('-'), chain(() => int), map(n => -n))
+const positiveOrNegative = pipe(int, alt(() => negativeNumber))
 const numberRow = pipe(sepBy1(string(' '), positiveOrNegative))
 
 export const parse = (input: string) => parseLineInput(numberRow)(input)
 
-export const diff = (a: number[]): number[] =>
-  pipe(
-    a,
-    aperture(2),
-    A.map(([x, y]) => y! - x!)
-  )
+export const diff = (a: number[]): number[] => pipe(
+  a,
+  aperture(2),
+  A.map(([x, y]) => y! - x!)
+)
+
 export const nextNumber = (a: number[]): number => {
   let current = a
   let lasts = [current[current.length - 1]!]
