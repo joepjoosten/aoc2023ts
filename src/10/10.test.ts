@@ -6,7 +6,7 @@ const { default: example } = await import(`@/10/example.txt`)
 describe('Day 10', () => {
   describe('Part One', () => {
     it('should pass the test input from day 10 part 1', () => {
-      expect(partOne(parse(example))).toBe(undefined)
+      expect(partOne(parse(example))).toBe(8)
     });
   })
   
